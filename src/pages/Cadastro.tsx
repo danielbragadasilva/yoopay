@@ -73,6 +73,9 @@ interface DadosBancarios {
   documentoBeneficiario: string;
 }
 const bancos = [{
+  codigo: "999",
+  nome: "Nenhum dos listados"
+},{
   codigo: "001",
   nome: "Banco do Brasil"
 }, {
@@ -94,12 +97,18 @@ const bancos = [{
   codigo: "260",
   nome: "Nubank"
 }, {
-  codigo: "999",
-  nome: "Nenhum dos listados"
-}, {
   codigo: "290",
   nome: "PagSeguro Internet"
 }, {
+  codigo: "197",
+  nome: "Picpay"
+},{
+  codigo: "077",
+  nome: "Inter"
+},{
+  codigo: "336",
+  nome: "C6 Bank"
+},{
   codigo: "323",
   nome: "Mercado Pago"
 }];
@@ -208,7 +217,7 @@ const Cadastro = ({
         headers: createAuthHeaders('YOOGA_PAYMENT_TOKEN')
       });
       if (!response.ok) {
-        throw new Error(`Erro na API: ${response.status}`);
+        throw new Error(`ID do cliente não cadastrado ou não existe`);
       }
       const data = await response.json();
 
@@ -227,7 +236,7 @@ const Cadastro = ({
         // Se for array, usar find normalmente
         clienteEncontrado = data.find((item: ClienteAPI) => {
           console.log('Verificando item:', item);
-          const match = item.id === clienteId || item.id === parseInt(clienteId) || item.codigo === clienteId || item.documento === clienteId;
+          const match = item.id === clienteId || item.id?.toString() === clienteId || (item as any).codigo === clienteId || (item as any).document === clienteId;
           console.log('Match encontrado?', match);
           return match;
         });
@@ -243,7 +252,7 @@ const Cadastro = ({
             console.log('Encontrou array em uma das propriedades:', arr);
             clienteEncontrado = arr.find((item: ClienteAPI) => {
               console.log('Verificando item do array aninhado:', item);
-              const match = item.id === clienteId || item.id === parseInt(clienteId) || item.codigo === clienteId || item.documento === clienteId;
+              const match = item.id === clienteId || item.id?.toString() === clienteId || (item as any).codigo === clienteId || (item as any).document === clienteId;
               console.log('Match encontrado?', match);
               return match;
             });
@@ -518,12 +527,85 @@ const Cadastro = ({
     }
   };
   const handleInputChange = (field: string, value: string) => {
+    if (field === "chavePix" && dadosBancarios.tipoChave === "telefone") {
+      // Remove todos os caracteres que não são números
+      let numeroLimpo = value.replace(/[^0-9]/g, "");
+      
+      // Se não começar com +55, adiciona automaticamente
+      if (!value.startsWith("+55")) {
+        // Remove +55 se já existir para evitar duplicação
+        numeroLimpo = numeroLimpo.replace(/^55/, "");
+        // Limita a 11 dígitos (DDD + número)
+        numeroLimpo = numeroLimpo.substring(0, 11);
+        value = numeroLimpo ? `+55${numeroLimpo}` : "+55";
+      } else {
+        // Se já tem +55, apenas limpa os números após o prefixo
+        const prefixo = "+55";
+        const numeroSemPrefixo = value.substring(3).replace(/[^0-9]/g, "");
+        // Limita a 11 dígitos após o +55
+        const numeroLimitado = numeroSemPrefixo.substring(0, 11);
+        value = `${prefixo}${numeroLimitado}`;
+      }
+    }
+    
+    // Validação para CPF e CNPJ - apenas números
+    if (field === "chavePix" && (dadosBancarios.tipoChave === "cpf" || dadosBancarios.tipoChave === "cnpj")) {
+      value = value.replace(/[^0-9]/g, "");
+      // Limita CPF a 11 dígitos e CNPJ a 14 dígitos
+      const maxLength = dadosBancarios.tipoChave === "cpf" ? 11 : 14;
+      value = value.substring(0, maxLength);
+    }
+    
+    // Validação para Documento do Beneficiário - apenas números
+    if (field === "documentoBeneficiario") {
+      value = value.replace(/[^0-9]/g, "");
+      // Limita a 14 dígitos (CNPJ é o maior)
+      value = value.substring(0, 14);
+    }
+    
     setDadosBancarios(prev => ({
       ...prev,
       [field]: value
     }));
   };
+
   const handleNovoCredenciamentoChange = (field: string, value: string) => {
+    if (field === "chavePix" && novoCredenciamento.tipoChave === "telefone") {
+      // Remove todos os caracteres que não são números
+      let numeroLimpo = value.replace(/[^0-9]/g, "");
+      
+      // Se não começar com +55, adiciona automaticamente
+      if (!value.startsWith("+55")) {
+        // Remove +55 se já existir para evitar duplicação
+        numeroLimpo = numeroLimpo.replace(/^55/, "");
+        // Limita a 11 dígitos (DDD + número)
+        numeroLimpo = numeroLimpo.substring(0, 11);
+        value = numeroLimpo ? `+55${numeroLimpo}` : "+55";
+      } else {
+        // Se já tem +55, apenas limpa os números após o prefixo
+        const prefixo = "+55";
+        const numeroSemPrefixo = value.substring(3).replace(/[^0-9]/g, "");
+        // Limita a 11 dígitos após o +55
+        const numeroLimitado = numeroSemPrefixo.substring(0, 11);
+        value = `${prefixo}${numeroLimitado}`;
+      }
+    }
+    
+    // Validação para CPF e CNPJ - apenas números
+    if (field === "chavePix" && (novoCredenciamento.tipoChave === "cpf" || novoCredenciamento.tipoChave === "cnpj")) {
+      value = value.replace(/[^0-9]/g, "");
+      // Limita CPF a 11 dígitos e CNPJ a 14 dígitos
+      const maxLength = novoCredenciamento.tipoChave === "cpf" ? 11 : 14;
+      value = value.substring(0, maxLength);
+    }
+    
+    // Validação para Documento do Beneficiário - apenas números
+    if (field === "documentoBeneficiario") {
+      value = value.replace(/[^0-9]/g, "");
+      // Limita a 14 dígitos (CNPJ é o maior)
+      value = value.substring(0, 14);
+    }
+    
     setNovoCredenciamento(prev => ({
       ...prev,
       [field]: value
@@ -731,7 +813,17 @@ const Cadastro = ({
           <div className="flex gap-4">
             <div className="flex-1">
               <Label htmlFor="clienteId">ID do Cliente</Label>
-              <Input id="clienteId" placeholder="Digite o ID do cliente" value={clienteId} onChange={e => setClienteId(e.target.value)} />
+              <Input 
+                id="clienteId" 
+                placeholder="Digite o ID do cliente" 
+                value={clienteId} 
+                onChange={e => setClienteId(e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') {
+                    buscarCliente();
+                  }
+                }}
+              />
             </div>
             <div className="flex items-end">
               <Button onClick={buscarCliente} disabled={loading}>
@@ -830,7 +922,22 @@ const Cadastro = ({
               </div>
               <div className="md:col-span-2">
                 <Label htmlFor="chavePix">Chave PIX</Label>
-                <Input id="chavePix" value={dadosBancarios.chavePix} onChange={e => handleInputChange("chavePix", e.target.value)} placeholder="Digite a chave PIX" />
+                <Input 
+                  id="chavePix" 
+                  value={dadosBancarios.chavePix} 
+                  onChange={e => handleInputChange("chavePix", e.target.value)} 
+                  placeholder={
+                    dadosBancarios.tipoChave === "telefone" 
+                      ? "+5511999999999" 
+                      : dadosBancarios.tipoChave === "email" 
+                      ? "exemplo@email.com"
+                      : dadosBancarios.tipoChave === "cpf"
+                      ? "000.000.000-00"
+                      : dadosBancarios.tipoChave === "cnpj"
+                      ? "00.000.000/0000-00"
+                      : "Digite a chave PIX"
+                  }
+                />
               </div>
               <div>
                 <Label htmlFor="nomeBeneficiario">Nome do Beneficiário</Label>

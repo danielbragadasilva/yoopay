@@ -3,10 +3,32 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { QrCode, CreditCard, Store, CheckCircle, XCircle, Clock, Eye, RefreshCw } from "lucide-react";
+import {
+  QrCode,
+  CreditCard,
+  Store,
+  CheckCircle,
+  XCircle,
+  Clock,
+  Eye,
+  RefreshCw,
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { usePixValidation } from "@/hooks/usePixValidation";
 
@@ -61,8 +83,8 @@ interface CredenciamentoCredito {
 }
 
 const Credenciamentos = ({ user }: CredenciamentosProps) => {
-  console.log('Credenciamentos component rendered with user:', user);
-  
+  console.log("Credenciamentos component rendered with user:", user);
+
   const { toast } = useToast();
 
   // Inicialização segura dos hooks
@@ -70,7 +92,7 @@ const Credenciamentos = ({ user }: CredenciamentosProps) => {
   try {
     pixValidationHooks = usePixValidation();
   } catch (error) {
-    console.error('Error initializing usePixValidation:', error);
+    console.error("Error initializing usePixValidation:", error);
     // Fallback para dados mockados quando há erro na API
     pixValidationHooks = {
       pendingRequests: [],
@@ -79,7 +101,7 @@ const Credenciamentos = ({ user }: CredenciamentosProps) => {
         toast({
           title: "Modo Offline",
           description: "Usando dados simulados - API indisponível",
-          variant: "destructive"
+          variant: "destructive",
         });
       },
       approveRequest: (id: string) => {
@@ -94,17 +116,17 @@ const Credenciamentos = ({ user }: CredenciamentosProps) => {
           description: `Credenciamento ${id} seria rejeitado (modo offline)`,
         });
       },
-      parsePayload: () => null
+      parsePayload: () => null,
     };
   }
 
-  const { 
-    pendingRequests, 
-    loading, 
-    fetchPendingRequests, 
-    approveRequest, 
-    rejectRequest, 
-    parsePayload 
+  const {
+    pendingRequests,
+    loading,
+    fetchPendingRequests,
+    approveRequest,
+    rejectRequest,
+    parsePayload,
   } = pixValidationHooks;
 
   // Estado para controlar se é a primeira vez que a página carrega
@@ -117,7 +139,7 @@ const Credenciamentos = ({ user }: CredenciamentosProps) => {
         fetchPendingRequests();
         setIsFirstLoad(false);
       } catch (error) {
-        console.error('Error fetching pending requests:', error);
+        console.error("Error fetching pending requests:", error);
       }
     }
   }, [fetchPendingRequests, isFirstLoad]);
@@ -134,14 +156,14 @@ const Credenciamentos = ({ user }: CredenciamentosProps) => {
       dadosMovimentacao: {
         faturamentoMensal: 150000,
         tempoAtividade: "3 anos",
-        ticketMedio: 250.50,
-        volumeTransacoes: 600
+        ticketMedio: 250.5,
+        volumeTransacoes: 600,
       },
       resultadoAnalise: {
         score: 8.5,
         recomendacao: "aprovar",
-        observacoes: "Cliente com bom histórico e movimento consistente."
-      }
+        observacoes: "Cliente com bom histórico e movimento consistente.",
+      },
     },
     {
       id: "CC002",
@@ -153,22 +175,25 @@ const Credenciamentos = ({ user }: CredenciamentosProps) => {
       dadosMovimentacao: {
         faturamentoMensal: 25000,
         tempoAtividade: "6 meses",
-        ticketMedio: 89.90,
-        volumeTransacoes: 278
+        ticketMedio: 89.9,
+        volumeTransacoes: 278,
       },
       resultadoAnalise: {
         score: 6.2,
         recomendacao: "manter_analise",
-        observacoes: "Cliente novo, necessita mais tempo de observação."
-      }
-    }
+        observacoes: "Cliente novo, necessita mais tempo de observação.",
+      },
+    },
   ];
 
-  const processarCredenciamentoCredito = (id: string, acao: "aprovar" | "rejeitar" | "manter_analise") => {
+  const processarCredenciamentoCredito = (
+    id: string,
+    acao: "aprovar" | "rejeitar" | "manter_analise"
+  ) => {
     const acoes = {
       aprovar: "aprovado",
-      rejeitar: "rejeitado", 
-      manter_analise: "mantido em análise"
+      rejeitar: "rejeitado",
+      manter_analise: "mantido em análise",
     };
 
     toast({
@@ -179,30 +204,44 @@ const Credenciamentos = ({ user }: CredenciamentosProps) => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "pendente": return "bg-yellow-100 text-yellow-800 border-yellow-200";
-      case "analise": return "bg-blue-100 text-blue-800 border-blue-200";
-      case "aprovado": return "bg-green-100 text-green-800 border-green-200";
-      case "rejeitado": return "bg-red-100 text-red-800 border-red-200";
-      default: return "bg-gray-100 text-gray-800 border-gray-200";
+      case "pendente":
+        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      case "analise":
+        return "bg-blue-100 text-blue-800 border-blue-200";
+      case "aprovado":
+        return "bg-green-100 text-green-800 border-green-200";
+      case "rejeitado":
+        return "bg-red-100 text-red-800 border-red-200";
+      default:
+        return "bg-gray-100 text-gray-800 border-gray-200";
     }
   };
 
   const getStatusLabel = (status: string) => {
     switch (status) {
-      case "pendente": return "Pendente";
-      case "analise": return "Em Análise";
-      case "aprovado": return "Aprovado";
-      case "rejeitado": return "Rejeitado";
-      default: return status;
+      case "pendente":
+        return "Pendente";
+      case "analise":
+        return "Em Análise";
+      case "aprovado":
+        return "Aprovado";
+      case "rejeitado":
+        return "Rejeitado";
+      default:
+        return status;
     }
   };
 
   const getRecomendacaoColor = (recomendacao: string) => {
     switch (recomendacao) {
-      case "aprovar": return "text-green-600";
-      case "rejeitar": return "text-red-600";
-      case "manter_analise": return "text-yellow-600";
-      default: return "text-gray-600";
+      case "aprovar":
+        return "text-green-600";
+      case "rejeitar":
+        return "text-red-600";
+      case "manter_analise":
+        return "text-yellow-600";
+      default:
+        return "text-gray-600";
     }
   };
 
@@ -213,7 +252,9 @@ const Credenciamentos = ({ user }: CredenciamentosProps) => {
           <Store className="w-6 h-6" />
           Credenciamentos
         </h1>
-        <p className="text-muted-foreground">Gerencie credenciamentos de novos clientes</p>
+        <p className="text-muted-foreground">
+          Gerencie credenciamentos de novos clientes
+        </p>
       </div>
 
       <Tabs defaultValue="pix" className="space-y-6">
@@ -224,12 +265,61 @@ const Credenciamentos = ({ user }: CredenciamentosProps) => {
           </TabsTrigger>
           <TabsTrigger value="credito" className="flex items-center gap-2">
             <CreditCard className="w-4 h-4" />
-            Crédito Online <span className="text-yellow-600 text-xs font-medium">(Em Construção)</span>
+            Crédito Online{" "}
+            <span className="text-yellow-600 text-xs font-medium">
+              (Em Construção)
+            </span>
           </TabsTrigger>
         </TabsList>
 
         {/* Tab PIX Online */}
         <TabsContent value="pix" className="space-y-6">
+          {/* Estatísticas */}
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Novos Credenciamentos</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">5</div>
+                <p className="text-xs text-muted-foreground">Este mês</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Em Análise</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">12</div>
+                <p className="text-xs text-muted-foreground">
+                  Aguardando aprovação
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Ativos</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">89</div>
+                <p className="text-xs text-muted-foreground">
+                  Estabelecimentos
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Taxa de Aprovação</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">92%</div>
+                <p className="text-xs text-muted-foreground">Esse mês</p>
+              </CardContent>
+            </Card>
+          </div>
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
@@ -239,16 +329,19 @@ const Credenciamentos = ({ user }: CredenciamentosProps) => {
                     Credenciamentos PIX Pendentes
                   </CardTitle>
                   <p className="text-sm text-muted-foreground">
-                    Analise e aprove credenciamentos PIX verificando se os dados bancários estão corretos
+                    Analise e aprove credenciamentos PIX verificando se os dados
+                    bancários estão corretos
                   </p>
                 </div>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={fetchPendingRequests}
                   disabled={loading}
                   size="sm"
                 >
-                  <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+                  <RefreshCw
+                    className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`}
+                  />
                   Atualizar Lista
                 </Button>
               </div>
@@ -268,7 +361,10 @@ const Credenciamentos = ({ user }: CredenciamentosProps) => {
                   <TableBody>
                     {pendingRequests.length === 0 && !loading ? (
                       <TableRow>
-                        <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                        <TableCell
+                          colSpan={5}
+                          className="text-center py-8 text-muted-foreground"
+                        >
                           Nenhuma solicitação pendente encontrada
                         </TableCell>
                       </TableRow>
@@ -279,13 +375,21 @@ const Credenciamentos = ({ user }: CredenciamentosProps) => {
                           <TableRow key={request.id}>
                             <TableCell>
                               <div>
-                                <div className="font-medium">{payloadData?.tradeName || 'N/A'}</div>
-                                <div className="text-sm text-muted-foreground">ID: {request.originId}</div>
+                                <div className="font-medium">
+                                  {payloadData?.tradeName || "N/A"}
+                                </div>
+                                <div className="text-sm text-muted-foreground">
+                                  ID: {request.originId}
+                                </div>
                               </div>
                             </TableCell>
-                            <TableCell>{payloadData?.document || 'N/A'}</TableCell>
                             <TableCell>
-                              {new Date(request.createdAt).toLocaleDateString('pt-BR')}
+                              {payloadData?.document || "N/A"}
+                            </TableCell>
+                            <TableCell>
+                              {new Date(request.createdAt).toLocaleDateString(
+                                "pt-BR"
+                              )}
                             </TableCell>
                             <TableCell>
                               <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">
@@ -303,54 +407,99 @@ const Credenciamentos = ({ user }: CredenciamentosProps) => {
                                   </DialogTrigger>
                                   <DialogContent className="max-w-2xl">
                                     <DialogHeader>
-                                      <DialogTitle>Dados Bancários - {payloadData?.tradeName}</DialogTitle>
+                                      <DialogTitle>
+                                        Dados Bancários -{" "}
+                                        {payloadData?.tradeName}
+                                      </DialogTitle>
                                     </DialogHeader>
                                     {payloadData?.bank && (
                                       <div className="grid grid-cols-2 gap-4">
                                         <div>
-                                          <Label className="text-sm font-medium text-muted-foreground">Nome do Banco</Label>
-                                          <p className="font-medium">{payloadData.bank.bankName || 'N/A'}</p>
+                                          <Label className="text-sm font-medium text-muted-foreground">
+                                            Nome do Banco
+                                          </Label>
+                                          <p className="font-medium">
+                                            {payloadData.bank.bankName || "N/A"}
+                                          </p>
                                         </div>
                                         <div>
-                                          <Label className="text-sm font-medium text-muted-foreground">Número do Banco</Label>
-                                          <p className="font-medium">{payloadData.bank.bankNumber || 'N/A'}</p>
+                                          <Label className="text-sm font-medium text-muted-foreground">
+                                            Número do Banco
+                                          </Label>
+                                          <p className="font-medium">
+                                            {payloadData.bank.bankNumber ||
+                                              "N/A"}
+                                          </p>
                                         </div>
                                         <div>
-                                          <Label className="text-sm font-medium text-muted-foreground">Agência</Label>
-                                          <p className="font-medium">{payloadData.bank.agency || 'N/A'}</p>
+                                          <Label className="text-sm font-medium text-muted-foreground">
+                                            Agência
+                                          </Label>
+                                          <p className="font-medium">
+                                            {payloadData.bank.agency || "N/A"}
+                                          </p>
                                         </div>
                                         <div>
-                                          <Label className="text-sm font-medium text-muted-foreground">Conta</Label>
-                                          <p className="font-medium">{payloadData.bank.account || 'N/A'}-{payloadData.bank.accountDigit || 'N/A'}</p>
+                                          <Label className="text-sm font-medium text-muted-foreground">
+                                            Conta
+                                          </Label>
+                                          <p className="font-medium">
+                                            {payloadData.bank.account || "N/A"}-
+                                            {payloadData.bank.accountDigit ||
+                                              "N/A"}
+                                          </p>
                                         </div>
                                         <div>
-                                          <Label className="text-sm font-medium text-muted-foreground">Tipo da Chave PIX</Label>
-                                          <p className="font-medium">{payloadData.bank.pixKeyType?.toUpperCase() || 'N/A'}</p>
+                                          <Label className="text-sm font-medium text-muted-foreground">
+                                            Tipo da Chave PIX
+                                          </Label>
+                                          <p className="font-medium">
+                                            {payloadData.bank.pixKeyType?.toUpperCase() ||
+                                              "N/A"}
+                                          </p>
                                         </div>
                                         <div>
-                                          <Label className="text-sm font-medium text-muted-foreground">Chave PIX</Label>
-                                          <p className="font-medium font-mono text-sm">{payloadData.bank.pixKey || 'N/A'}</p>
+                                          <Label className="text-sm font-medium text-muted-foreground">
+                                            Chave PIX
+                                          </Label>
+                                          <p className="font-medium font-mono text-sm">
+                                            {payloadData.bank.pixKey || "N/A"}
+                                          </p>
                                         </div>
                                         <div>
-                                          <Label className="text-sm font-medium text-muted-foreground">Nome do Beneficiário</Label>
-                                          <p className="font-medium">{payloadData.bank.holderName || 'N/A'}</p>
+                                          <Label className="text-sm font-medium text-muted-foreground">
+                                            Nome do Beneficiário
+                                          </Label>
+                                          <p className="font-medium">
+                                            {payloadData.bank.holderName ||
+                                              "N/A"}
+                                          </p>
                                         </div>
                                         <div>
-                                          <Label className="text-sm font-medium text-muted-foreground">Documento do Beneficiário</Label>
-                                          <p className="font-medium">{payloadData.bank.holderDocument || 'N/A'}</p>
+                                          <Label className="text-sm font-medium text-muted-foreground">
+                                            Documento do Beneficiário
+                                          </Label>
+                                          <p className="font-medium">
+                                            {payloadData.bank.holderDocument ||
+                                              "N/A"}
+                                          </p>
                                         </div>
                                       </div>
                                     )}
                                     <div className="flex justify-end gap-2 mt-6">
-                                      <Button 
-                                        variant="destructive" 
-                                        onClick={() => rejectRequest(request.originId)}
+                                      <Button
+                                        variant="destructive"
+                                        onClick={() =>
+                                          rejectRequest(request.originId)
+                                        }
                                       >
                                         <XCircle className="w-4 h-4 mr-1" />
                                         Rejeitar
                                       </Button>
-                                      <Button 
-                                        onClick={() => approveRequest(request.originId)}
+                                      <Button
+                                        onClick={() =>
+                                          approveRequest(request.originId)
+                                        }
                                       >
                                         <CheckCircle className="w-4 h-4 mr-1" />
                                         Aprovar
@@ -373,170 +522,7 @@ const Credenciamentos = ({ user }: CredenciamentosProps) => {
 
         {/* Tab Crédito Online */}
         <TabsContent value="credito" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <CreditCard className="w-5 h-5" />
-                Credenciamentos Crédito em Análise
-              </CardTitle>
-              <p className="text-sm text-muted-foreground">
-                Analise baseada em dados de movimentação e vendas dos clientes
-              </p>
-            </CardHeader>
-            {/* Faixa de Em Construção */}
-            <div className="bg-yellow-100 border-l-4 border-yellow-500 p-4 mx-6 mb-4">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <svg className="h-5 w-5 text-yellow-500" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                  </svg>
-                </div>
-                <div className="ml-3">
-                  <p className="text-sm text-yellow-700">
-                    <strong>🚧 Seção em Construção</strong> - Esta funcionalidade está sendo desenvolvida e estará disponível em breve.
-                  </p>
-                </div>
-              </div>
-            </div>
-            <CardContent>
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Cliente</TableHead>
-                      <TableHead>Documento</TableHead>
-                      <TableHead>Score</TableHead>
-                      <TableHead>Recomendação</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Ações</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {credenciamentosCredito.map((credenciamento) => (
-                      <TableRow key={credenciamento.id}>
-                        <TableCell>
-                          <div>
-                            <div className="font-medium">{credenciamento.clienteNome}</div>
-                            <div className="text-sm text-muted-foreground">ID: {credenciamento.clienteId}</div>
-                          </div>
-                        </TableCell>
-                        <TableCell>{credenciamento.documento}</TableCell>
-                        <TableCell>
-                          {credenciamento.resultadoAnalise && (
-                            <div className="flex items-center gap-2">
-                              <Badge variant="outline">
-                                {credenciamento.resultadoAnalise.score}/10
-                              </Badge>
-                            </div>
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          {credenciamento.resultadoAnalise && (
-                            <span className={`font-medium ${getRecomendacaoColor(credenciamento.resultadoAnalise.recomendacao)}`}>
-                              {credenciamento.resultadoAnalise.recomendacao === "aprovar" && "Aprovar"}
-                              {credenciamento.resultadoAnalise.recomendacao === "rejeitar" && "Rejeitar"}
-                              {credenciamento.resultadoAnalise.recomendacao === "manter_analise" && "Manter em Análise"}
-                            </span>
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          <Badge className={getStatusColor(credenciamento.status)}>
-                            {getStatusLabel(credenciamento.status)}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex gap-2">
-                            <Dialog>
-                              <DialogTrigger asChild>
-                                <Button variant="outline" size="sm">
-                                  <Eye className="w-3 h-3 mr-1" />
-                                  Ver Análise
-                                </Button>
-                              </DialogTrigger>
-                              <DialogContent className="max-w-2xl">
-                                <DialogHeader>
-                                  <DialogTitle>Análise de Credenciamento - {credenciamento.clienteNome}</DialogTitle>
-                                </DialogHeader>
-                                <div className="space-y-4">
-                                  <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                      <Label className="text-sm font-medium text-muted-foreground">Faturamento Mensal</Label>
-                                      <p className="font-medium">R$ {credenciamento.dadosMovimentacao.faturamentoMensal.toLocaleString('pt-BR')}</p>
-                                    </div>
-                                    <div>
-                                      <Label className="text-sm font-medium text-muted-foreground">Tempo de Atividade</Label>
-                                      <p className="font-medium">{credenciamento.dadosMovimentacao.tempoAtividade}</p>
-                                    </div>
-                                    <div>
-                                      <Label className="text-sm font-medium text-muted-foreground">Ticket Médio</Label>
-                                      <p className="font-medium">R$ {credenciamento.dadosMovimentacao.ticketMedio.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
-                                    </div>
-                                    <div>
-                                      <Label className="text-sm font-medium text-muted-foreground">Volume de Transações</Label>
-                                      <p className="font-medium">{credenciamento.dadosMovimentacao.volumeTransacoes}/mês</p>
-                                    </div>
-                                  </div>
-                                  
-                                  {credenciamento.resultadoAnalise && (
-                                    <div className="border-t pt-4">
-                                      <div className="grid grid-cols-2 gap-4">
-                                        <div>
-                                          <Label className="text-sm font-medium text-muted-foreground">Score da Análise</Label>
-                                          <p className="font-medium text-lg">{credenciamento.resultadoAnalise.score}/10</p>
-                                        </div>
-                                        <div>
-                                          <Label className="text-sm font-medium text-muted-foreground">Recomendação</Label>
-                                          <p className={`font-medium ${getRecomendacaoColor(credenciamento.resultadoAnalise.recomendacao)}`}>
-                                            {credenciamento.resultadoAnalise.recomendacao === "aprovar" && "Aprovar Credenciamento"}
-                                            {credenciamento.resultadoAnalise.recomendacao === "rejeitar" && "Rejeitar Credenciamento"}
-                                            {credenciamento.resultadoAnalise.recomendacao === "manter_analise" && "Manter em Análise"}
-                                          </p>
-                                        </div>
-                                      </div>
-                                      <div className="mt-4">
-                                        <Label className="text-sm font-medium text-muted-foreground">Observações</Label>
-                                        <p className="text-sm mt-1">{credenciamento.resultadoAnalise.observacoes}</p>
-                                      </div>
-                                    </div>
-                                  )}
-                                </div>
-                                <div className="flex justify-end gap-2 mt-6">
-                                  <Button 
-                                    variant="destructive" 
-                                    onClick={() => processarCredenciamentoCredito(credenciamento.id, "rejeitar")}
-                                  >
-                                    <XCircle className="w-4 h-4 mr-1" />
-                                    Rejeitar
-                                  </Button>
-                                  <Button 
-                                    variant="outline"
-                                    onClick={() => processarCredenciamentoCredito(credenciamento.id, "manter_analise")}
-                                  >
-                                    <Clock className="w-4 h-4 mr-1" />
-                                    Manter Análise
-                                  </Button>
-                                  <Button 
-                                    onClick={() => processarCredenciamentoCredito(credenciamento.id, "aprovar")}
-                                  >
-                                    <CheckCircle className="w-4 h-4 mr-1" />
-                                    Aprovar
-                                  </Button>
-                                </div>
-                              </DialogContent>
-                            </Dialog>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-
-      {/* Estatísticas */}
+                {/* Estatísticas */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader>
@@ -544,7 +530,7 @@ const Credenciamentos = ({ user }: CredenciamentosProps) => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">5</div>
-            <p className="text-xs text-muted-foreground">Esta semana</p>
+            <p className="text-xs text-muted-foreground">Este mês</p>
           </CardContent>
         </Card>
 
@@ -574,10 +560,272 @@ const Credenciamentos = ({ user }: CredenciamentosProps) => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">92%</div>
-            <p className="text-xs text-muted-foreground">Último mês</p>
+            <p className="text-xs text-muted-foreground">Esse mês</p>
           </CardContent>
         </Card>
       </div>
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <CreditCard className="w-5 h-5" />
+                Credenciamentos Crédito em Análise
+              </CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Analise baseada em dados de movimentação e vendas dos clientes
+              </p>
+            </CardHeader>
+            {/* Faixa de Em Construção */}
+            <div className="bg-yellow-100 border-l-4 border-yellow-500 p-4 mx-6 mb-4">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <svg
+                    className="h-5 w-5 text-yellow-500"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <p className="text-sm text-yellow-700">
+                    <strong>🚧 Seção em Construção</strong> - Esta
+                    funcionalidade está sendo desenvolvida e estará disponível
+                    em breve.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Cliente</TableHead>
+                      <TableHead>Documento</TableHead>
+                      <TableHead>Score</TableHead>
+                      <TableHead>Recomendação</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Ações</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {credenciamentosCredito.map((credenciamento) => (
+                      <TableRow key={credenciamento.id}>
+                        <TableCell>
+                          <div>
+                            <div className="font-medium">
+                              {credenciamento.clienteNome}
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                              ID: {credenciamento.clienteId}
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell>{credenciamento.documento}</TableCell>
+                        <TableCell>
+                          {credenciamento.resultadoAnalise && (
+                            <div className="flex items-center gap-2">
+                              <Badge variant="outline">
+                                {credenciamento.resultadoAnalise.score}/10
+                              </Badge>
+                            </div>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {credenciamento.resultadoAnalise && (
+                            <span
+                              className={`font-medium ${getRecomendacaoColor(
+                                credenciamento.resultadoAnalise.recomendacao
+                              )}`}
+                            >
+                              {credenciamento.resultadoAnalise.recomendacao ===
+                                "aprovar" && "Aprovar"}
+                              {credenciamento.resultadoAnalise.recomendacao ===
+                                "rejeitar" && "Rejeitar"}
+                              {credenciamento.resultadoAnalise.recomendacao ===
+                                "manter_analise" && "Manter em Análise"}
+                            </span>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            className={getStatusColor(credenciamento.status)}
+                          >
+                            {getStatusLabel(credenciamento.status)}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex gap-2">
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button variant="outline" size="sm">
+                                  <Eye className="w-3 h-3 mr-1" />
+                                  Ver Análise
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="max-w-2xl">
+                                <DialogHeader>
+                                  <DialogTitle>
+                                    Análise de Credenciamento -{" "}
+                                    {credenciamento.clienteNome}
+                                  </DialogTitle>
+                                </DialogHeader>
+                                <div className="space-y-4">
+                                  <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                      <Label className="text-sm font-medium text-muted-foreground">
+                                        Faturamento Mensal
+                                      </Label>
+                                      <p className="font-medium">
+                                        R${" "}
+                                        {credenciamento.dadosMovimentacao.faturamentoMensal.toLocaleString(
+                                          "pt-BR"
+                                        )}
+                                      </p>
+                                    </div>
+                                    <div>
+                                      <Label className="text-sm font-medium text-muted-foreground">
+                                        Tempo de Atividade
+                                      </Label>
+                                      <p className="font-medium">
+                                        {
+                                          credenciamento.dadosMovimentacao
+                                            .tempoAtividade
+                                        }
+                                      </p>
+                                    </div>
+                                    <div>
+                                      <Label className="text-sm font-medium text-muted-foreground">
+                                        Ticket Médio
+                                      </Label>
+                                      <p className="font-medium">
+                                        R${" "}
+                                        {credenciamento.dadosMovimentacao.ticketMedio.toLocaleString(
+                                          "pt-BR",
+                                          { minimumFractionDigits: 2 }
+                                        )}
+                                      </p>
+                                    </div>
+                                    <div>
+                                      <Label className="text-sm font-medium text-muted-foreground">
+                                        Volume de Transações
+                                      </Label>
+                                      <p className="font-medium">
+                                        {
+                                          credenciamento.dadosMovimentacao
+                                            .volumeTransacoes
+                                        }
+                                        /mês
+                                      </p>
+                                    </div>
+                                  </div>
+
+                                  {credenciamento.resultadoAnalise && (
+                                    <div className="border-t pt-4">
+                                      <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                          <Label className="text-sm font-medium text-muted-foreground">
+                                            Score da Análise
+                                          </Label>
+                                          <p className="font-medium text-lg">
+                                            {
+                                              credenciamento.resultadoAnalise
+                                                .score
+                                            }
+                                            /10
+                                          </p>
+                                        </div>
+                                        <div>
+                                          <Label className="text-sm font-medium text-muted-foreground">
+                                            Recomendação
+                                          </Label>
+                                          <p
+                                            className={`font-medium ${getRecomendacaoColor(
+                                              credenciamento.resultadoAnalise
+                                                .recomendacao
+                                            )}`}
+                                          >
+                                            {credenciamento.resultadoAnalise
+                                              .recomendacao === "aprovar" &&
+                                              "Aprovar Credenciamento"}
+                                            {credenciamento.resultadoAnalise
+                                              .recomendacao === "rejeitar" &&
+                                              "Rejeitar Credenciamento"}
+                                            {credenciamento.resultadoAnalise
+                                              .recomendacao ===
+                                              "manter_analise" &&
+                                              "Manter em Análise"}
+                                          </p>
+                                        </div>
+                                      </div>
+                                      <div className="mt-4">
+                                        <Label className="text-sm font-medium text-muted-foreground">
+                                          Observações
+                                        </Label>
+                                        <p className="text-sm mt-1">
+                                          {
+                                            credenciamento.resultadoAnalise
+                                              .observacoes
+                                          }
+                                        </p>
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                                <div className="flex justify-end gap-2 mt-6">
+                                  <Button
+                                    variant="destructive"
+                                    onClick={() =>
+                                      processarCredenciamentoCredito(
+                                        credenciamento.id,
+                                        "rejeitar"
+                                      )
+                                    }
+                                  >
+                                    <XCircle className="w-4 h-4 mr-1" />
+                                    Rejeitar
+                                  </Button>
+                                  <Button
+                                    variant="outline"
+                                    onClick={() =>
+                                      processarCredenciamentoCredito(
+                                        credenciamento.id,
+                                        "manter_analise"
+                                      )
+                                    }
+                                  >
+                                    <Clock className="w-4 h-4 mr-1" />
+                                    Manter Análise
+                                  </Button>
+                                  <Button
+                                    onClick={() =>
+                                      processarCredenciamentoCredito(
+                                        credenciamento.id,
+                                        "aprovar"
+                                      )
+                                    }
+                                  >
+                                    <CheckCircle className="w-4 h-4 mr-1" />
+                                    Aprovar
+                                  </Button>
+                                </div>
+                              </DialogContent>
+                            </Dialog>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
